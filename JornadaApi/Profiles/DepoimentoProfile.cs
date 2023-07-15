@@ -10,6 +10,7 @@ namespace JornadaApi.Profiles
         {
             CreateMap<CreateDepoimentoDto, Depoimento>();
             CreateMap<UpdateDepoimentoDto, Depoimento>();
+            CreateMap<Depoimento, UpdateDepoimentoDto>();
         }
     }
 }
