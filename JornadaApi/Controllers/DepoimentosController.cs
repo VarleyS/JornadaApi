@@ -31,9 +31,9 @@ namespace JornadaApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Depoimento> RetornaDepoimentos([FromQuery] int skip = 0, [FromQuery] int take = 50)
+        public IEnumerable<ReadDepoimentoDto> RetornaDepoimentos([FromQuery] int skip = 0, [FromQuery] int take = 50)
         {
-            return _context.Depoiementos.Skip(skip).Take(take);
+            return _mapper.Map<List<ReadDepoimentoDto>>(_context.Depoiementos.Skip(skip).Take(take));
         }
 
         [HttpGet("{id}")]
@@ -45,7 +45,8 @@ namespace JornadaApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(depoimento);
+            var depoimentoDto = _mapper.Map<ReadDepoimentoDto>(depoimento);
+            return Ok(depoimentoDto);
         }
 
         [HttpPut("{id}")]
@@ -62,7 +63,7 @@ namespace JornadaApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult AtualizaDepoimentoParcial(Guid id, JsonPatchDocument<UpdateDepoimentoDto> patch) 
+        public IActionResult AtualizaDepoimentoParcial(Guid id, JsonPatchDocument<UpdateDepoimentoDto> patch)
         {
             var depoimento = _context.Depoiementos.FirstOrDefault(depoimento => depoimento.Id == id);
             if (depoimento == null)
@@ -79,6 +80,20 @@ namespace JornadaApi.Controllers
             }
 
             _mapper.Map(depoimentoParaAtualizar, depoimento);
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletaDepoimento(Guid id)
+        {
+            var depoimento = _context.Depoiementos.FirstOrDefault(depoimento => depoimento.Id == id);
+            if (depoimento == null)
+            {
+                return NotFound();
+            }
+
+            _context.Remove(depoimento);
             _context.SaveChanges();
             return NoContent();
         }
