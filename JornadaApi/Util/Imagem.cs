@@ -12,20 +12,23 @@ namespace JornadaApi.Util
 {
     public class Imagem
     {
-        public byte[] imageParaByteArray(Image image)
+        public byte[] imageParaByteArray(Image image = Image.FromFile(Path))
         {
             MemoryStream ms = new MemoryStream();
-            image.Save(ms, ImageFormat.Gif);
-            return ms.ToArray();
+            image.Save(ms, image.RawFormat);
+            byte[] imageBytes = ms.ToArray();
+
+            string base64String = Convert.ToBase64String(imageBytes);
+            return base64String;
         }
 
-        //public byte[] byteArrayParaImage(byte[] byteArray)
-        //{
-        //    MemoryStream ms = new MemoryStream(byteArray);
-        //    Image retornaImagem = Image.FromStream(ms);
-        //    return retornaImagem;
+        public byte[] byteArrayParaImage(byte[] byteArray)
+        {
+            MemoryStream ms = new MemoryStream(byteArray);
+            Image retornaImagem = Image.FromStream(ms);
+            return retornaImagem;
 
-        //}
+        }
 
     }
 }
