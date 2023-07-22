@@ -27,7 +27,7 @@ namespace JornadaApi.Controllers
         /// <returns>IActionResult</returns>
         /// <response code="201">Caso inserção seja feita com sucesso</response>
         [HttpPost]
-        public IActionResult AdicionaDepoimento([FromBody] CreateDepoimentoDto depoimentoDto)
+        public IActionResult AdicionaDepoimento([FromForm] CreateDepoimentoDto depoimentoDto)
         {
             Depoimento depoimento = _mapper.Map<Depoimento>(depoimentoDto);
             _context.Depoiementos.Add(depoimento);
