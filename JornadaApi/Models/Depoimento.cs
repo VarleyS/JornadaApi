@@ -1,5 +1,6 @@
 ﻿using JornadaApi.Util;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 
 namespace JornadaApi.Models
@@ -13,8 +14,10 @@ namespace JornadaApi.Models
         [Required(ErrorMessage = "Nome é obrigatório.")]
         public string Nome { get; set; }
 
-        [Required]
-        public string Foto { get; set; }
+        public string? Foto { get; set; }
+
+        [NotMapped]
+        public IFormFile Imagem { get; set; }
 
         [Required]
         [MaxLength(500, ErrorMessage = "Tamanho máximo de 500 caracteres.")]

@@ -12,13 +12,38 @@ namespace JornadaApi.Util
 {
     public class ImagemConvert
     {
-        public static string ConvertImagemParaString(string imagemPara)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public ImagemConvert(IWebHostEnvironment webHostEnvironment)
+        {
+            _webHostEnvironment = webHostEnvironment;
+        }
+
+        public string ConvertImagemParaString(IFormFile imagem)
         {
             try
             {
-                byte[] imagemByte = File.ReadAllBytes(imagemPara);
-                string base64String = Convert.ToBase64String(imagemByte);
-                return base64String;
+                if(imagem != null && imagem.Length > 0)
+                {
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imagem.FileName);
+
+                    var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "TempImages", uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        imagem.CopyTo(stream);
+                    }
+
+                    var imageBytes = File.ReadAllBytes(filePath);
+                    var base64String = Convert.ToBase64String(imageBytes);
+
+                    File.Delete(filePath);
+
+                    return base64String;
+                }
+
+                return null;
+                
             }
             catch (Exception ex)
             {

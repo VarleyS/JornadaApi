@@ -3,6 +3,7 @@ using Azure;
 using JornadaApi.Data;
 using JornadaApi.Data.Dtos;
 using JornadaApi.Models;
+using JornadaApi.Util;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,13 +26,23 @@ namespace JornadaApi.Controllers
         /// </summary>
         /// <param name="depoimentoDto">Objeto com os campos necessários para criação de um depoimento</param>
         /// <returns>IActionResult</returns>
-        /// <response code="201">Caso inserção seja feita com sucesso</response>
+        /// <response code="201">Caso inserção seja feita com sucesso</response>-
         [HttpPost]
         public IActionResult AdicionaDepoimento([FromForm] CreateDepoimentoDto depoimentoDto)
         {
-            Depoimento depoimento = _mapper.Map<Depoimento>(depoimentoDto);
-            _context.Depoiementos.Add(depoimento);
-            _context.SaveChanges();
+            Depoimento depoimento = new Depoimento();
+
+            if (depoimentoDto != null && depoimentoDto.Imagem != null && depoimentoDto.RegistroDepoimento != null)
+            {
+                depoimentoDto.SalvaDepoimentoComImagem(depoimentoDto.Nome, depoimentoDto.Imagem, depoimentoDto.RegistroDepoimento);
+                depoimento = _mapper.Map<Depoimento>(depoimentoDto);
+                _context.Depoiementos.Add(depoimento);
+                _context.SaveChanges();
+            }
+            else
+            {
+                return BadRequest();
+            }
             return CreatedAtAction(nameof(RetornaDepoimentoId), new { id = depoimento.Id }, depoimento);
         }
 
