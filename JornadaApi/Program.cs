@@ -1,6 +1,7 @@
 using JornadaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Writers;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -3,7 +3,6 @@ using Azure;
 using JornadaApi.Data;
 using JornadaApi.Data.Dtos;
 using JornadaApi.Models;
-using JornadaApi.Util;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,9 +31,9 @@ namespace JornadaApi.Controllers
         {
             Depoimento depoimento = new Depoimento();
 
-            if (depoimentoDto != null && depoimentoDto.Imagem != null && depoimentoDto.RegistroDepoimento != null)
+            if (depoimentoDto != null && depoimentoDto.FotoBase64 != null && depoimentoDto.RegistroDepoimento != null)
             {
-                depoimentoDto.SalvaDepoimentoComImagem(depoimentoDto.Nome, depoimentoDto.Imagem, depoimentoDto.RegistroDepoimento);
+                depoimentoDto.FotoBase64 = Convert.FromBase64String(depoimentoDto.Foto);
                 depoimento = _mapper.Map<Depoimento>(depoimentoDto);
                 _context.Depoiementos.Add(depoimento);
                 _context.SaveChanges();

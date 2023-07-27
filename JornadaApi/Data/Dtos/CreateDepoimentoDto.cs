@@ -1,5 +1,4 @@
 ﻿using JornadaApi.Models;
-using JornadaApi.Util;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
@@ -9,12 +8,6 @@ namespace JornadaApi.Data.Dtos
 {
     public class CreateDepoimentoDto
     {
-        private ImagemConvert _imagemConvert;
-
-        public CreateDepoimentoDto(ImagemConvert imagemConvert)
-        {
-            _imagemConvert = imagemConvert;
-        }
         public CreateDepoimentoDto()
         {
         }
@@ -25,22 +18,10 @@ namespace JornadaApi.Data.Dtos
         public string? Foto { get; set; }
 
         [Required]
-        [StringLength(500, ErrorMessage = "Tamanho máximo de 500 caracteres.")]
+        [MaxLength(500, ErrorMessage = "Tamanho máximo de 500 caracteres.")]
         public string RegistroDepoimento { get; set; }
 
         [NotMapped]
-        public IFormFile Imagem { get; set; }
-
-        public void SalvaDepoimentoComImagem(string depoimentoNome, IFormFile imagemPara, string registroDepoimento)
-        {
-            string imagemBase64 = _imagemConvert.ConvertImagemParaString(imagemPara);
-
-            Depoimento depoimento = new Depoimento
-            {
-                Nome = depoimentoNome,
-                Foto = imagemBase64,
-                RegistroDepoimento = registroDepoimento
-            };
-        }
+        public byte[]? FotoBase64 { get; internal set; }
     }
 }
