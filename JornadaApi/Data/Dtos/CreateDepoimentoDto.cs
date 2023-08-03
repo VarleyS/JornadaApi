@@ -1,4 +1,7 @@
-﻿using JornadaApi.Models;
+﻿using JornadaApi.Images;
+using JornadaApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
@@ -20,8 +23,5 @@ namespace JornadaApi.Data.Dtos
         [Required]
         [MaxLength(500, ErrorMessage = "Tamanho máximo de 500 caracteres.")]
         public string RegistroDepoimento { get; set; }
-
-        [NotMapped]
-        public byte[]? FotoBase64 { get; internal set; }
     }
 }

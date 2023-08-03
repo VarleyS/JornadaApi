@@ -2,9 +2,11 @@
 using Azure;
 using JornadaApi.Data;
 using JornadaApi.Data.Dtos;
+using JornadaApi.Images;
 using JornadaApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace JornadaApi.Controllers
 {
@@ -14,6 +16,7 @@ namespace JornadaApi.Controllers
     {
         private DepoimentoContext _context;
         private IMapper _mapper;
+        private Img _img = new Img();
 
         public DepoimentosController(DepoimentoContext depomentoContext, IMapper mapper)
         {
@@ -27,15 +30,15 @@ namespace JornadaApi.Controllers
         /// <returns>IActionResult</returns>
         /// <response code="201">Caso inserção seja feita com sucesso</response>-
         [HttpPost]
-        public IActionResult AdicionaDepoimento([FromForm] CreateDepoimentoDto depoimentoDto)
+        public async Task<IActionResult> AdicionaDepoimento([FromBody] CreateDepoimentoDto depoimentoDto)
         {
             Depoimento depoimento = new Depoimento();
 
-            if (depoimentoDto != null && depoimentoDto.FotoBase64 != null && depoimentoDto.RegistroDepoimento != null)
+            if (depoimentoDto != null)
             {
-                depoimentoDto.FotoBase64 = Convert.FromBase64String(depoimentoDto.Foto);
                 depoimento = _mapper.Map<Depoimento>(depoimentoDto);
-                _context.Depoiementos.Add(depoimento);
+                _context.Depoimentos.Add(depoimento);
+                _img.Save(depoimentoDto.Foto);
                 _context.SaveChanges();
             }
             else
@@ -55,7 +58,7 @@ namespace JornadaApi.Controllers
         [HttpGet]
         public IEnumerable<ReadDepoimentoDto> RetornaDepoimentos([FromQuery] int skip = 0, [FromQuery] int take = 50)
         {
-            return _mapper.Map<List<ReadDepoimentoDto>>(_context.Depoiementos.Skip(skip).Take(take));
+            return _mapper.Map<List<ReadDepoimentoDto>>(_context.Depoimentos.Skip(skip).Take(take));
         }
 
         /// <summary>
@@ -67,7 +70,7 @@ namespace JornadaApi.Controllers
         [HttpGet("{id}")]
         public IActionResult RetornaDepoimentoId(Guid id)
         {
-            var depoimento = _context.Depoiementos.FirstOrDefault(depoimentos => depoimentos.Id == id);
+            var depoimento = _context.Depoimentos.FirstOrDefault(depoimentos => depoimentos.Id == id);
 
             if (depoimento == null)
             {
@@ -87,7 +90,7 @@ namespace JornadaApi.Controllers
         [HttpPut("{id}")]
         public IActionResult AtualizaDepoimento(Guid id, [FromBody] UpdateDepoimentoDto depoimentoDto)
         {
-            var depoimento = _context.Depoiementos.FirstOrDefault(depoimento => depoimento.Id == id);
+            var depoimento = _context.Depoimentos.FirstOrDefault(depoimento => depoimento.Id == id);
             if (depoimento == null)
             {
                 return NotFound();
@@ -108,7 +111,7 @@ namespace JornadaApi.Controllers
         [HttpPatch("{id}")]
         public IActionResult AtualizaDepoimentoParcial(Guid id, JsonPatchDocument<UpdateDepoimentoDto> patch)
         {
-            var depoimento = _context.Depoiementos.FirstOrDefault(depoimento => depoimento.Id == id);
+            var depoimento = _context.Depoimentos.FirstOrDefault(depoimento => depoimento.Id == id);
             if (depoimento == null)
             {
                 return NotFound();
@@ -136,12 +139,11 @@ namespace JornadaApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletaDepoimento(Guid id)
         {
-            var depoimento = _context.Depoiementos.FirstOrDefault(depoimento => depoimento.Id == id);
+            var depoimento = _context.Depoimentos.FirstOrDefault(depoimento => depoimento.Id == id);
             if (depoimento == null)
             {
                 return NotFound();
             }
-
             _context.Remove(depoimento);
             _context.SaveChanges();
             return NoContent();

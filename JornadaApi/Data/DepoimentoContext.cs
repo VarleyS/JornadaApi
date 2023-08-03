@@ -9,6 +9,6 @@ namespace JornadaApi.Data
         {
         }
 
-        public DbSet<Depoimento> Depoiementos { get; set; }
+        public DbSet<Depoimento> Depoimentos { get; set; }
     }
 }
