@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JornadaApi.Images;
+using System.ComponentModel.DataAnnotations;
 
 namespace JornadaApi.Data.Dtos
 {

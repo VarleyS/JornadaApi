@@ -76,8 +76,11 @@ namespace JornadaApi.Controllers
             {
                 return NotFound();
             }
+            var imageBytes = _img.ConvertBase64ToImage(depoimento.Foto);
+            
             var depoimentoDto = _mapper.Map<ReadDepoimentoDto>(depoimento);
             return Ok(depoimentoDto);
+            //return File(imageBytes, "image/jpeg");
         }
 
         /// <summary>
